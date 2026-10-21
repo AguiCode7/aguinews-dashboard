@@ -1,0 +1,117 @@
+<div class="mx-auto max-w-4xl px-4 pb-16">
+  @if (editions().length === 0 && summaries.isLoading()) {
+    <div role="status" aria-busy="true" class="grid gap-4">
+      <span class="sr-only">Cargando ediciones…</span>
+      <div class="h-96 animate-pulse rounded-3xl bg-deep"></div>
+      <div class="h-28 animate-pulse rounded-2xl bg-deep/90"></div>
+      <div class="h-28 animate-pulse rounded-2xl bg-deep/90"></div>
+    </div>
+  } @else if (editions().length === 0 && summaries.error()) {
+    <div
+      role="alert"
+      class="flex flex-col items-center gap-4 rounded-3xl border border-gold/40 bg-deep p-8 text-center sm:flex-row sm:text-left"
+    >
+      <img src="agui/agui-warning.webp" alt="" width="62" height="120" />
+      <div>
+        <h2 class="font-display text-xl font-semibold">
+          No se pudo conectar con la API de AguiNews
+        </h2>
+        <p class="mt-2 text-mist">
+          Revisa que la API esté corriendo y vuelve a intentarlo.
+        </p>
+        <button
+          type="button"
+          class="mt-5 rounded-full bg-linear-to-r from-cyan to-cyan-deep px-5 py-2.5 font-display font-semibold text-night"
+          (click)="retry()"
+        >
+          Reintentar
+        </button>
+      </div>
+    </div>
+  } @else if (lead(); as lead) {
+    <app-edition-card [summary]="lead" featured />
+
+    <section aria-labelledby="earlier-title" class="mt-12">
+      <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <h2
+          id="earlier-title"
+          class="font-display text-lg font-semibold text-mist"
+        >
+          Ediciones anteriores
+        </h2>
+        <form
+          role="search"
+          class="w-full sm:w-80"
+          (submit)="$event.preventDefault()"
+        >
+          <label class="sr-only" for="search"
+            >Buscar en ediciones anteriores</label
+          >
+          <input
+            #searchBox
+            id="search"
+            type="search"
+            placeholder="Buscar en ediciones anteriores"
+            class="w-full rounded-full border border-mist/50 bg-deep px-4 py-2.5 text-sm placeholder:text-mist focus:border-cyan"
+            [value]="search()"
+            (input)="search.set(searchBox.value)"
+          />
+        </form>
+      </div>
+
+      <p class="sr-only" aria-live="polite">
+        @if (search()) {
+          {{ earlier().length }} ediciones coinciden con {{ search() }}
+        }
+      </p>
+
+      @if (earlier().length > 0) {
+        <div class="grid gap-3">
+          @for (summary of earlier(); track summary.id) {
+            <app-edition-card
+              [summary]="summary"
+              [highlight]="highlightTerm()"
+            />
+          }
+        </div>
+      } @else if (search()) {
+        <div
+          class="flex flex-col items-center gap-3 rounded-3xl border border-white/5 bg-deep/90 p-8 text-center"
+        >
+          <img src="agui/agui-thinking.webp" alt="" width="52" height="120" />
+          <p>Ninguna edición anterior menciona “{{ search() }}”.</p>
+          <button
+            type="button"
+            class="px-2 py-2.5 font-medium text-cyan underline-offset-4 hover:underline"
+            (click)="clearSearch()"
+          >
+            Borrar búsqueda
+          </button>
+        </div>
+      } @else {
+        <p class="text-mist">Aún no hay ediciones anteriores.</p>
+      }
+
+      @if (canLoadMore() && !search()) {
+        <button
+          type="button"
+          class="mx-auto mt-6 block rounded-full border border-petrol px-6 py-3 font-medium text-cyan transition-colors hover:bg-petrol/20 disabled:opacity-60"
+          [disabled]="summaries.isLoading()"
+          (click)="loadMore()"
+        >
+          {{ summaries.isLoading() ? 'Cargando…' : 'Ver más ediciones' }}
+        </button>
+      }
+    </section>
+  } @else {
+    <div
+      class="flex flex-col items-center gap-3 rounded-3xl border border-white/5 bg-deep/90 p-8 text-center"
+    >
+      <img src="agui/agui-thinking.webp" alt="" width="52" height="120" />
+      <p>Todavía no hay ediciones.</p>
+      <p class="text-mist">
+        Cuando el bot guarde su primer resumen, aparecerá aquí.
+      </p>
+    </div>
+  }
+</div>

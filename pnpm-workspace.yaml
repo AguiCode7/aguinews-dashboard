@@ -1,0 +1,8 @@
+# Dependencias a las que pnpm deja ejecutar scripts de instalación (pnpm 10 los bloquea por defecto).
+onlyBuiltDependencies:
+  - esbuild
+# Paquetes opcionales que no necesitan compilar nada para este proyecto.
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - lmdb
+  - msgpackr-extract
