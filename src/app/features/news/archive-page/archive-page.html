@@ -1,0 +1,162 @@
+<div class="mx-auto max-w-4xl px-4 pt-8 pb-16 sm:px-6 sm:pt-10">
+  <h1 class="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+    Archivo
+  </h1>
+  <p class="mt-2 text-mist">
+    Todas las ediciones de AguiNews. Busca por palabra o filtra por tema.
+  </p>
+
+  <form role="search" class="mt-6" (submit)="$event.preventDefault()">
+    <label for="archive-search" class="sr-only">Buscar en el archivo</label>
+    <div
+      class="flex h-12 items-center gap-3 rounded-full border border-mist/30 bg-deep px-5 focus-within:border-cyan"
+    >
+      <app-icon name="search" [size]="18" class="text-mist" />
+      <input
+        #box
+        id="archive-search"
+        type="search"
+        placeholder="Ej.: PostgreSQL, seguridad, Angular"
+        class="min-w-0 flex-1 bg-transparent placeholder:text-mist focus:outline-none"
+        [value]="search()"
+        (input)="search.set(box.value)"
+      />
+    </div>
+  </form>
+
+  <div
+    class="mt-4 flex flex-wrap gap-2"
+    role="group"
+    aria-label="Filtrar por tema"
+  >
+    @for (t of topics; track t) {
+      <button
+        type="button"
+        class="rounded-full border px-3.5 py-2.5 text-sm transition-colors"
+        [class]="
+          topic() === t
+            ? 'border-cyan bg-cyan text-night'
+            : 'border-cyan/35 text-cyan hover:bg-cyan/10'
+        "
+        [attr.aria-pressed]="topic() === t"
+        (click)="selectTopic(t)"
+      >
+        {{ t }}
+      </button>
+    }
+  </div>
+
+  @if (editions.isLoading() && !editionList().length) {
+    <div role="status" aria-busy="true" class="mt-8 grid gap-3">
+      <span class="sr-only">Cargando el archivo…</span>
+      <div class="h-28 animate-pulse rounded-[20px] bg-deep"></div>
+      <div class="h-28 animate-pulse rounded-[20px] bg-deep"></div>
+    </div>
+  } @else if (editions.error()) {
+    <p role="alert" class="mt-8 rounded-2xl border border-gold/40 bg-deep p-6">
+      No se pudo cargar el archivo.
+      <button
+        type="button"
+        class="ml-1 font-medium text-cyan underline-offset-4 hover:underline"
+        (click)="editions.reload()"
+      >
+        Reintentar
+      </button>
+    </p>
+  } @else if (isFiltering()) {
+    <p class="mt-8 text-sm text-mist" aria-live="polite">
+      {{ results().length }}
+      {{
+        results().length === 1 ? 'noticia encontrada' : 'noticias encontradas'
+      }}
+      @if (topic()) {
+        en {{ topic() }}
+      }
+    </p>
+    @if (results().length) {
+      <ul class="mt-3 grid gap-3">
+        @for (a of results(); track a.id) {
+          <li>
+            <a
+              [routerLink]="['/articles', a.id]"
+              class="group block rounded-[20px] border border-white/5 bg-deep p-5 transition hover:border-petrol"
+            >
+              <span class="flex flex-wrap gap-x-2.5 text-[13px]">
+                <span class="font-medium text-cyan">{{ a.topic }}</span>
+                <span class="text-mist first-letter:uppercase"
+                  >{{ a.editionDate | date: "EEE d 'de' MMM" }} ·
+                  {{ a.sourceName }}</span
+                >
+                @if (reading.isRead(a.id)) {
+                  <span class="text-[#5fd39a]">Leída</span>
+                }
+              </span>
+              <span
+                class="mt-1 block font-display text-lg leading-snug font-bold group-hover:text-cyan"
+              >
+                @for (
+                  part of a.title | highlight: highlightTerm();
+                  track $index
+                ) {
+                  @if (part.match) {
+                    <mark>{{ part.text }}</mark>
+                  } @else {
+                    {{ part.text }}
+                  }
+                }
+              </span>
+              <span class="mt-1 block text-[15px] text-mist">{{
+                a.headline
+              }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <div
+        class="mt-4 flex flex-col items-center gap-3 rounded-3xl border border-white/5 bg-deep/90 p-8 text-center"
+      >
+        <img src="agui/agui-thinking.webp" alt="" width="52" height="120" />
+        <p>No hay noticias que coincidan.</p>
+        <button
+          type="button"
+          class="px-2 py-2.5 font-medium text-cyan underline-offset-4 hover:underline"
+          (click)="clear()"
+        >
+          Borrar filtros
+        </button>
+      </div>
+    }
+  } @else {
+    <ul class="mt-8 grid gap-3">
+      @for (e of editionList(); track e.id) {
+        <li>
+          <a
+            [routerLink]="['/editions', e.id]"
+            class="group block rounded-[20px] border border-white/5 bg-deep p-5 transition hover:border-petrol"
+          >
+            <span
+              class="flex flex-wrap justify-between gap-3 text-[13px] text-mist"
+            >
+              <span class="font-medium text-gold first-letter:uppercase">{{
+                e.createdAt | date: "EEEE d 'de' MMMM, h:mm a"
+              }}</span>
+              @if (e.articles.length) {
+                <span
+                  >{{ readCountOf(e) }} de {{ e.articles.length }} leídas</span
+                >
+              }
+            </span>
+            <ul class="mt-2 grid gap-1 text-[15px] leading-snug">
+              @for (headline of headlinesOf(e); track $index) {
+                <li class="truncate group-hover:text-ice">{{ headline }}</li>
+              }
+            </ul>
+          </a>
+        </li>
+      } @empty {
+        <li class="text-mist">Aún no hay ediciones.</li>
+      }
+    </ul>
+  }
+</div>

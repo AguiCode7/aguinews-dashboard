@@ -1,0 +1,78 @@
+@let a = article();
+@if (featured()) {
+  <a
+    [routerLink]="['/articles', a.id]"
+    class="group block rounded-[28px] border border-cyan/30 bg-linear-to-br from-[#13234f] to-deep p-6 shadow-2xl shadow-black/30 transition hover:-translate-y-0.5 hover:border-cyan/60 sm:p-8"
+  >
+    <div class="flex flex-wrap items-center gap-3 text-sm">
+      <span
+        class="rounded-lg bg-gold px-2.5 py-0.5 font-display font-black text-night"
+        >{{ number(a.position) }}</span
+      >
+      <span class="rounded-full bg-cyan/12 px-3 py-1 font-medium text-cyan">{{
+        a.topic
+      }}</span>
+      <span class="text-mist"
+        >{{ a.sourceName }} · {{ a.readingMinutes }} min</span
+      >
+    </div>
+    <h3
+      class="mt-4 font-display text-2xl leading-tight font-extrabold text-balance sm:text-3xl"
+    >
+      {{ a.title }}
+    </h3>
+    <p class="mt-3 max-w-[62ch] text-[17px] leading-relaxed text-[#c9d6e3]">
+      {{ a.headline }}
+    </p>
+    <span
+      class="mt-6 inline-flex h-12 items-center gap-2.5 rounded-full bg-cyan px-6 font-display text-[15px] font-bold text-night shadow-lg shadow-cyan/20 transition group-hover:shadow-cyan/40"
+    >
+      {{ cta() }}
+      <app-icon
+        name="arrow-right"
+        [size]="18"
+        [stroke]="2.4"
+        class="transition group-hover:translate-x-1"
+      />
+    </span>
+  </a>
+} @else {
+  <a
+    [routerLink]="['/articles', a.id]"
+    class="group grid grid-cols-[2.25rem_1fr] items-center gap-4 rounded-[20px] border border-white/5 bg-deep p-4 transition hover:-translate-y-0.5 hover:border-petrol sm:grid-cols-[3.25rem_1fr_auto] sm:gap-5 sm:p-5"
+  >
+    <span
+      class="font-display text-xl font-black sm:text-2xl"
+      [class.text-gold]="!read()"
+      [class.text-mist]="read()"
+      >{{ number(a.position) }}</span
+    >
+    <span class="min-w-0">
+      <span class="flex flex-wrap items-center gap-x-2.5 text-[13px]">
+        <span class="font-medium text-cyan">{{ a.topic }}</span>
+        <span class="text-mist"
+          >{{ a.sourceName }} · {{ a.readingMinutes }} min</span
+        >
+      </span>
+      <span
+        class="mt-1 block font-display text-[17px] leading-snug font-bold transition-colors group-hover:text-cyan sm:text-lg"
+        >{{ a.title }}</span
+      >
+      <span class="mt-1 block text-[15px] leading-normal text-mist">{{
+        a.headline
+      }}</span>
+    </span>
+    @if (read()) {
+      <span
+        class="col-start-2 flex items-center gap-1.5 text-[13px] font-medium text-[#5fd39a] sm:col-start-auto"
+      >
+        <app-icon name="check" [size]="16" [stroke]="2.4" />Leída
+      </span>
+    } @else {
+      <app-icon
+        name="chevron-right"
+        class="hidden text-mist transition group-hover:translate-x-1 group-hover:text-cyan sm:inline-flex"
+      />
+    }
+  </a>
+}

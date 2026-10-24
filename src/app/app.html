@@ -4,37 +4,91 @@
   >Saltar al contenido</a
 >
 
-<header class="relative">
-  <span
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-x-0 top-0 h-48 bg-linear-to-b from-petrol/20 to-transparent"
-  ></span>
+<header
+  [class]="
+    layout.immersive()
+      ? 'hidden border-b border-white/5 md:block'
+      : 'border-b border-white/5'
+  "
+>
   <div
-    class="relative mx-auto flex max-w-4xl flex-col items-center gap-1.5 px-4 pt-6 pb-6 text-center sm:gap-2 sm:pt-10 sm:pb-8"
+    class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-7 gap-y-3 px-4 py-3 sm:px-6"
   >
     <a routerLink="/" class="shrink-0">
       <img
         ngSrc="brand/aguinews-logo.webp"
-        alt="AguiNews, ir a la portada"
+        alt="AguiNews, ir a la edición de hoy"
         width="680"
         height="240"
         priority
-        class="h-16 w-auto sm:h-24"
+        class="h-10 w-auto sm:h-11"
       />
     </a>
-    <p class="text-sm font-semibold text-gold sm:text-base">
-      Las noticias de tecnología del día, resumidas
-    </p>
+
+    <nav aria-label="Secciones" class="hidden gap-1 md:flex">
+      @for (section of sections; track section.path) {
+        <a
+          [routerLink]="section.path"
+          routerLinkActive="bg-gold/12 text-gold"
+          [routerLinkActiveOptions]="{ exact: section.exact }"
+          #rla="routerLinkActive"
+          [attr.aria-current]="rla.isActive ? 'page' : null"
+          class="rounded-full px-4 py-2.5 font-medium text-mist transition-colors hover:text-ice"
+          >{{ section.label }}</a
+        >
+      }
+    </nav>
+
+    <a
+      routerLink="/archive"
+      aria-label="Buscar noticias"
+      class="ml-auto grid size-11 place-items-center rounded-full border border-mist/25 bg-deep sm:hidden"
+    >
+      <app-icon name="search" [size]="18" />
+    </a>
+    <form
+      role="search"
+      class="ml-auto hidden sm:block sm:w-80 md:w-72 lg:w-80"
+      (submit)="search($event, query.value)"
+    >
+      <label for="global-search" class="sr-only">Buscar noticias</label>
+      <div
+        class="flex h-11 items-center gap-2.5 rounded-full border border-mist/25 bg-deep px-4 focus-within:border-cyan"
+      >
+        <app-icon name="search" [size]="18" class="text-mist" />
+        <input
+          #query
+          id="global-search"
+          type="search"
+          placeholder="Buscar en todas las ediciones"
+          class="min-w-0 flex-1 bg-transparent text-[15px] placeholder:text-mist focus:outline-none"
+        />
+      </div>
+    </form>
   </div>
 </header>
 
-<main id="main" tabindex="-1" class="focus:outline-none">
+<main
+  id="main"
+  tabindex="-1"
+  [class]="
+    layout.immersive()
+      ? 'focus:outline-none'
+      : 'pb-24 focus:outline-none md:pb-0'
+  "
+>
   <router-outlet />
 </main>
 
-<footer class="border-t border-white/5">
+<footer
+  [class]="
+    layout.immersive()
+      ? 'hidden border-t border-white/5 md:block'
+      : 'border-t border-white/5'
+  "
+>
   <div
-    class="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-8 text-sm text-mist sm:flex-row sm:items-center"
+    class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-mist sm:flex-row sm:items-center sm:px-6"
   >
     <img
       ngSrc="agui/agui-waving.webp"
@@ -44,8 +98,9 @@
       class="h-12 w-auto self-start sm:self-auto"
     />
     <p class="flex-1">
-      Resúmenes generados cada día con n8n e inteligencia artificial. Hecho con
-      Angular por AguiCode, © {{ year }}.
+      Resúmenes generados cada día con n8n e inteligencia artificial. Cada
+      noticia enlaza a su fuente original. Hecho con Angular por AguiCode, ©
+      {{ year }}.
     </p>
     <nav aria-label="AguiCode" class="flex gap-4">
       <a
@@ -65,3 +120,30 @@
     </nav>
   </div>
 </footer>
+
+@if (!layout.immersive()) {
+  <nav
+    aria-label="Secciones"
+    class="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-white/10 bg-deep/95 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden"
+  >
+    @for (section of sections; track section.path) {
+      <a
+        [routerLink]="section.path"
+        routerLinkActive="text-ice"
+        [routerLinkActiveOptions]="{ exact: section.exact }"
+        #rla="routerLinkActive"
+        [attr.aria-current]="rla.isActive ? 'page' : null"
+        class="flex flex-col items-center gap-1 py-1 text-xs font-medium text-mist"
+      >
+        <!-- Íconos en dorado; la sección activa lleva además una cápsula dorada -->
+        <span
+          class="grid h-8 w-14 place-items-center rounded-full text-gold transition-colors"
+          [class]="rla.isActive ? 'bg-gold/15' : ''"
+        >
+          <app-icon [name]="section.icon" [size]="22" />
+        </span>
+        {{ section.label }}
+      </a>
+    }
+  </nav>
+}

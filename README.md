@@ -1,17 +1,29 @@
 # 📰 AguiNews · sitio de noticias en Angular 22
 
-El sitio de AguiNews: la edición de hoy en grande, las anteriores con buscador y una página de lectura para cada edición. Consume la API del video anterior ([aguinews-api](https://github.com/AguiCode7/aguinews-api)).
+El sitio de AguiNews: la edición de hoy con tu progreso de lectura, una página de lectura para cada noticia (tamaño de letra, guardar, anterior y siguiente), el archivo con buscador y temas, y las guardadas. En el móvil, una barra abajo al alcance del pulgar. Consume la [aguinews-api](https://github.com/AguiCode7/aguinews-api).
 
-▶️ **Video:** [Angular 22: tu sitio de noticias con Signals y httpResource](https://youtu.be/zutLQhcb0bM)
+## 📺 Serie Proyecto AguiNews
+
+Cada video tiene su versión del código marcada con un tag.
+
+| Video | Qué se construye | Código |
+| --- | --- | --- |
+| 3 · [Angular 22: tu sitio de noticias con Signals y httpResource](https://youtu.be/zutLQhcb0bM) | Portada, buscador y lectura por edición | [`v003`](https://github.com/AguiCode7/aguinews-dashboard/tree/v003) |
+| 4 · [Una IA lee 7 blogs en inglés y me deja las 5 mejores en español](https://youtu.be/HhHvUosNz4E) | El lector: una página por noticia, progreso, guardadas y móvil | [`v004`](https://github.com/AguiCode7/aguinews-dashboard/tree/v004) (rama `main`) |
+
+▶️ Playlist completa: [Proyecto AguiNews](https://www.youtube.com/playlist?list=PLSpS3teXK-LM) · La API: [aguinews-api](https://github.com/AguiCode7/aguinews-api) (videos 2, 3 y 4)
 
 ## Cómo funciona
 
 | Pieza | Qué hace |
 | --- | --- |
-| `features/summaries/data` | Contrato con la API (`summary.ts`), lector de noticias (`news-item.ts`) y servicio con `httpResource` (`summary-api.ts`) |
-| `edition-list` | Portada: signals, `linkedSignal`, `computed` y buscador en el navegador |
-| `edition-card` | Tarjeta grande o compacta, pipes `relativeTime` y `highlight` |
-| `edition-detail` | Página de lectura, 404, ediciones vecinas y título de la pestaña |
+| `features/news/data` | Contratos con la API (`summary.ts`, `article.ts`), temas y servicio con `httpResource` (`news-api.ts`) |
+| `edition-page` | Portada: la edición de hoy, noticia principal y progreso de lectura |
+| `reader-page` | Página de lectura: `httpResource` por id, barra de progreso, tamaño de letra, guardar y noticia anterior o siguiente |
+| `archive-page` | Ediciones anteriores con buscador y filtro por tema |
+| `saved-page` | Noticias guardadas para después |
+| `core/reading` | `reading-state`: leídas, guardadas y tamaño de letra con signals, guardado en `localStorage` (sin cuentas ni contraseñas) |
+| `shared/pipes` | `relativeTime` y `highlight` |
 
 Angular 22 sin zone.js, OnPush por defecto, Tailwind 4 y pruebas con Vitest.
 
@@ -26,7 +38,7 @@ nvm use 24.15.0
 corepack enable pnpm
 ```
 
-- La API AguiNews corriendo en `http://localhost:5080` (ver el repositorio del video 2).
+- La API AguiNews corriendo en `http://localhost:5080` ([aguinews-api](https://github.com/AguiCode7/aguinews-api), tag `v004`).
 
 ## Uso
 

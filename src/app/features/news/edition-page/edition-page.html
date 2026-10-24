@@ -1,0 +1,268 @@
+<div class="mx-auto max-w-6xl px-4 pt-8 pb-16 sm:px-6 sm:pt-10">
+  @if (isLoading() && !edition()) {
+    <div role="status" aria-busy="true" class="grid max-w-3xl gap-4">
+      <span class="sr-only">Cargando la edición…</span>
+      <div class="h-6 w-60 animate-pulse rounded-lg bg-deep"></div>
+      <div class="h-12 w-3/4 animate-pulse rounded-xl bg-deep"></div>
+      <div class="mt-4 h-72 animate-pulse rounded-[28px] bg-deep"></div>
+      <div class="h-28 animate-pulse rounded-[20px] bg-deep/90"></div>
+      <div class="h-28 animate-pulse rounded-[20px] bg-deep/90"></div>
+    </div>
+  } @else if (error() && !edition()) {
+    <div
+      role="alert"
+      class="flex max-w-3xl flex-col items-center gap-4 rounded-3xl border border-gold/40 bg-deep p-8 text-center sm:flex-row sm:text-left"
+    >
+      @if (notFound()) {
+        <img src="agui/agui-surprised.webp" alt="" width="74" height="120" />
+        <div>
+          <h1 class="font-display text-xl font-semibold">
+            Esta edición no existe
+          </h1>
+          <p class="mt-2 text-mist">Puede que el enlace esté incompleto.</p>
+          <a
+            routerLink="/"
+            class="mt-3 inline-block py-2.5 font-medium text-cyan underline-offset-4 hover:underline"
+            >Ir a la edición de hoy</a
+          >
+        </div>
+      } @else {
+        <img src="agui/agui-warning.webp" alt="" width="62" height="120" />
+        <div>
+          <h1 class="font-display text-xl font-semibold">
+            No se pudo conectar con la API de AguiNews
+          </h1>
+          <p class="mt-2 text-mist">
+            Revisa que la API esté corriendo y vuelve a intentarlo.
+          </p>
+          <button
+            type="button"
+            class="mt-5 rounded-full bg-cyan px-5 py-2.5 font-display font-semibold text-night"
+            (click)="retry()"
+          >
+            Reintentar
+          </button>
+        </div>
+      }
+    </div>
+  } @else if (edition(); as e) {
+    <div class="flex flex-wrap gap-10">
+      <section
+        aria-labelledby="edition-title"
+        class="min-w-0 flex-[999_1_560px]"
+      >
+        <p
+          class="text-[15px] font-medium tracking-wide text-gold first-letter:uppercase"
+        >
+          <time [attr.datetime]="e.createdAt">{{
+            e.createdAt | date: "EEEE d 'de' MMMM"
+          }}</time>
+          · Edición de las {{ e.createdAt | date: 'h:mm a' }}
+        </p>
+        <h1
+          id="edition-title"
+          class="mt-2 font-display text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-[40px]"
+        >
+          {{
+            isToday()
+              ? 'Lo que importa hoy en tecnología'
+              : 'Lo que importó ese día'
+          }}
+        </h1>
+        <p class="mt-2 text-[17px] text-mist">
+          {{ e.newsCount }} noticias de {{ e.source }}, resumidas en español.
+          @if (totalMinutes()) {
+            Unos {{ totalMinutes() }} minutos de lectura.
+          }
+        </p>
+
+        @if (featured(); as featured) {
+          <app-article-card
+            class="mt-7 block"
+            [article]="featured"
+            featured
+            [cta]="readCount() > 0 ? 'Seguir leyendo' : 'Leer en AguiNews'"
+          />
+          <ol class="mt-4 grid gap-3" aria-label="Más noticias de la edición">
+            @for (article of others(); track article.id) {
+              <li>
+                <app-article-card
+                  [article]="article"
+                  [read]="reading.isRead(article.id)"
+                />
+              </li>
+            }
+          </ol>
+        } @else {
+          <!-- Edición anterior al modo lectura: cada noticia enlaza a su fuente -->
+          <ol class="mt-7 grid gap-3">
+            @for (item of legacyItems(); track $index; let i = $index) {
+              <li>
+                @if (item.url) {
+                  <a
+                    [href]="item.url"
+                    target="_blank"
+                    rel="noopener"
+                    class="group grid grid-cols-[2.25rem_1fr] gap-4 rounded-[20px] border border-white/5 bg-deep p-5 transition hover:border-petrol"
+                  >
+                    <span class="font-display text-xl font-black text-gold">{{
+                      (i + 1).toString().padStart(2, '0')
+                    }}</span>
+                    <span>
+                      <span
+                        class="block leading-snug font-medium group-hover:text-cyan"
+                        >{{ item.headline }}</span
+                      >
+                      <span
+                        class="mt-1 inline-flex items-center gap-1 text-sm text-mist"
+                        >{{ item.domain }}
+                        <app-icon name="external" [size]="14" />
+                        <span class="sr-only"
+                          >(se abre en otra pestaña)</span
+                        ></span
+                      >
+                    </span>
+                  </a>
+                } @else {
+                  <p class="rounded-[20px] border border-white/5 bg-deep p-5">
+                    {{ item.headline }}
+                  </p>
+                }
+              </li>
+            }
+          </ol>
+          <p class="mt-4 text-sm text-mist">
+            Esta edición es anterior al modo lectura: cada noticia abre su
+            fuente original.
+          </p>
+        }
+      </section>
+
+      <aside
+        aria-label="Tu lectura y archivo"
+        class="flex flex-[1_1_300px] flex-col gap-5"
+      >
+        @if (articles().length) {
+          <section class="rounded-3xl border border-white/5 bg-deep p-6">
+            <h2 class="font-display text-[17px] font-bold">
+              Tu progreso {{ isToday() ? 'de hoy' : 'en esta edición' }}
+            </h2>
+            <p class="mt-1.5 text-[15px] text-mist">
+              Llevas {{ readCount() }} de {{ articles().length }} noticias
+              leídas
+            </p>
+            <div
+              role="progressbar"
+              aria-label="Noticias leídas"
+              [attr.aria-valuenow]="readCount()"
+              aria-valuemin="0"
+              [attr.aria-valuemax]="articles().length"
+              class="mt-3.5 flex gap-1.5"
+            >
+              @for (article of articles(); track article.id) {
+                <span
+                  class="h-2 flex-1 rounded-full"
+                  [class]="
+                    reading.isRead(article.id) ? 'bg-cyan' : 'bg-mist/25'
+                  "
+                ></span>
+              }
+            </div>
+            @if (readCount() < articles().length) {
+              @if (featured(); as next) {
+                <a
+                  [routerLink]="['/articles', next.id]"
+                  class="mt-4 inline-flex min-h-11 items-center gap-2 font-medium text-cyan hover:underline"
+                  >{{
+                    readCount() === 0
+                      ? 'Empezar por la noticia'
+                      : 'Seguir con la noticia'
+                  }}
+                  {{ next.position }}
+                  <app-icon name="arrow-right" [size]="16" [stroke]="2.4" />
+                </a>
+              }
+            } @else {
+              <p class="mt-4 flex items-center gap-2 font-medium text-gold">
+                <app-icon name="check" [size]="18" [stroke]="2.4" />
+                ¡Edición completa! Nos vemos mañana.
+              </p>
+            }
+          </section>
+        }
+
+        <section class="rounded-3xl border border-white/5 bg-deep p-6">
+          <h2 class="font-display text-[17px] font-bold">
+            Ediciones anteriores
+          </h2>
+          @if (earlier().length) {
+            <ul class="mt-2">
+              @for (other of earlier(); track other.id) {
+                <li class="border-t border-white/5 first:border-t-0">
+                  <a
+                    [routerLink]="['/editions', other.id]"
+                    class="block py-3.5 transition-colors hover:text-cyan"
+                  >
+                    <span
+                      class="flex justify-between gap-3 text-[13px] text-mist"
+                    >
+                      <span class="first-letter:uppercase">{{
+                        other.createdAt | date: "EEE d 'de' MMM, h:mm a"
+                      }}</span>
+                      @if (other.articles.length) {
+                        <span
+                          >{{ readCountOf(other) }} de
+                          {{ other.articles.length }} leídas</span
+                        >
+                      }
+                    </span>
+                    <span class="mt-1 block text-[15px] leading-snug">{{
+                      firstHeadline(other)
+                    }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="mt-2 text-[15px] text-mist">
+              Aún no hay ediciones anteriores.
+            </p>
+          }
+          <a
+            routerLink="/archive"
+            class="mt-1 inline-flex min-h-11 items-center font-medium text-cyan hover:underline"
+            >Ver todo el archivo</a
+          >
+        </section>
+
+        @if (topics().length) {
+          <section class="rounded-3xl border border-white/5 bg-deep p-6">
+            <h2 class="font-display text-[17px] font-bold">
+              Explorar por tema
+            </h2>
+            <div class="mt-3.5 flex flex-wrap gap-2">
+              @for (topic of topics(); track topic) {
+                <a
+                  routerLink="/archive"
+                  [queryParams]="{ topic }"
+                  class="rounded-full border border-cyan/35 px-3.5 py-2.5 text-sm text-cyan transition-colors hover:bg-cyan/10"
+                  >{{ topic }}</a
+                >
+              }
+            </div>
+          </section>
+        }
+      </aside>
+    </div>
+  } @else {
+    <div
+      class="flex max-w-3xl flex-col items-center gap-3 rounded-3xl border border-white/5 bg-deep/90 p-8 text-center"
+    >
+      <img src="agui/agui-thinking.webp" alt="" width="52" height="120" />
+      <p>Todavía no hay ediciones.</p>
+      <p class="text-mist">
+        Cuando el bot guarde su primer resumen, aparecerá aquí.
+      </p>
+    </div>
+  }
+</div>
