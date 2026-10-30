@@ -11,9 +11,6 @@ import { InstallHint } from './core/layout/install-hint';
 import { LayoutState } from './core/layout/layout-state';
 import { Icon } from './shared/ui/icon';
 
-// Enlace del pie al código del proyecto (el del canal viene de environment).
-const GITHUB_URL = 'https://github.com/AguiCode7';
-
 // Secciones de la app (encabezado en escritorio y barra inferior en el móvil).
 const SECTIONS = [
   { path: '/', label: 'Hoy', icon: 'today', exact: true },
@@ -41,8 +38,12 @@ export class App {
   protected readonly layout = inject(LayoutState);
 
   protected readonly sections = SECTIONS;
-  protected readonly channelUrl = environment.channelUrl;
-  protected readonly githubUrl = GITHUB_URL;
+  // Redes del canal que se muestran en el pie (con ícono y nombre).
+  protected readonly socialLinks = [
+    { label: 'YouTube', url: environment.channelUrl, icon: 'youtube' },
+    { label: 'Instagram', url: environment.instagramUrl, icon: 'instagram' },
+    { label: 'GitHub', url: environment.githubUrl, icon: 'github' },
+  ] as const;
   protected readonly year = new Date().getFullYear();
 
   // El buscador del encabezado lleva al archivo con la búsqueda aplicada.

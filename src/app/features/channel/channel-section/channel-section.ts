@@ -35,4 +35,5 @@ export class ChannelSection {
   );
 
   protected readonly channelUrl = environment.channelUrl;
+  protected readonly instagramUrl = environment.instagramUrl;
 }

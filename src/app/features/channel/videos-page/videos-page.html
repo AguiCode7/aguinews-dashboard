@@ -86,13 +86,24 @@
     }
   }
 
-  <a
-    [href]="channelUrl"
-    target="_blank"
-    rel="noopener"
-    class="mt-10 inline-flex h-12 items-center gap-2.5 rounded-full bg-gold px-6 font-display text-[15px] font-bold text-night"
-  >
-    <app-icon name="play" [size]="18" />Suscríbete al canal
-    <span class="sr-only">(se abre en otra pestaña)</span>
-  </a>
+  <div class="mt-10 flex flex-wrap gap-3">
+    <a
+      [href]="channelUrl"
+      target="_blank"
+      rel="noopener"
+      class="inline-flex h-12 items-center gap-2.5 rounded-full bg-gold px-6 font-display text-[15px] font-bold text-night"
+    >
+      <app-icon name="youtube" [size]="18" />Suscríbete al canal
+      <span class="sr-only">(se abre en otra pestaña)</span>
+    </a>
+    <a
+      [href]="instagramUrl"
+      target="_blank"
+      rel="noopener"
+      class="inline-flex h-12 items-center gap-2.5 rounded-full border border-gold/50 px-6 font-display text-[15px] font-bold text-gold hover:bg-gold/10"
+    >
+      <app-icon name="instagram" [size]="18" />Síguenos en Instagram
+      <span class="sr-only">(se abre en otra pestaña)</span>
+    </a>
+  </div>
 </div>
