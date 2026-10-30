@@ -54,4 +54,58 @@
       >
     </div>
   }
+
+  <section
+    aria-labelledby="progress-title"
+    class="mt-10 rounded-3xl border border-white/5 bg-deep/90 p-5 sm:p-6"
+  >
+    <h2 id="progress-title" class="font-display text-xl font-bold">
+      Tu progreso
+    </h2>
+    <p id="progress-help" class="mt-2 text-mist">
+      Tu progreso se guarda solo en este navegador. Exporta una copia para
+      pasarlo a otro dispositivo o recuperarlo si se borra.
+    </p>
+
+    <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+      <button
+        type="button"
+        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-cyan/50 px-5 font-medium text-cyan transition-colors hover:bg-cyan/10"
+        (click)="exportProgress()"
+      >
+        <app-icon name="download" [size]="18" />
+        Exportar
+      </button>
+
+      <!-- El input real queda oculto; la etiqueta hace de botón y recibe su foco visible -->
+      <div>
+        <input
+          #fileInput
+          id="progress-file"
+          type="file"
+          accept="application/json,.json"
+          aria-describedby="progress-help"
+          class="peer sr-only"
+          [disabled]="importing()"
+          (change)="importProgress(fileInput)"
+        />
+        <label
+          for="progress-file"
+          class="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-cyan/50 px-5 font-medium text-cyan transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-cyan peer-disabled:cursor-wait peer-disabled:opacity-60 hover:bg-cyan/10 sm:w-auto"
+        >
+          <app-icon name="upload" [size]="18" />
+          {{ importing() ? 'Importando…' : 'Importar' }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Región viva: el lector de pantalla anuncia el resultado sin mover el foco -->
+    <p role="status" aria-live="polite" class="mt-4 empty:hidden">
+      @if (importResult(); as result) {
+        <span [class]="result.ok ? 'text-success' : 'text-danger'">{{
+          result.message
+        }}</span>
+      }
+    </p>
+  </section>
 </div>

@@ -19,6 +19,8 @@ export class ArticleCard {
   readonly article = input.required<ArticleItem>();
   readonly read = input(false, { transform: booleanAttribute });
   readonly featured = input(false, { transform: booleanAttribute });
+  // La noticia tiene un Short en el canal (el enlace está en el modo lectura).
+  readonly hasShort = input(false, { transform: booleanAttribute });
   // Texto del botón de la tarjeta destacada ("Leer…", "Seguir leyendo").
   readonly cta = input('Leer en AguiNews');
 

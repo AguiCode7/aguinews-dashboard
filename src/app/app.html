@@ -68,6 +68,9 @@
   </div>
 </header>
 
+<!-- Aviso de memoria: solo en navegadores donde el progreso corre riesgo -->
+<app-install-hint />
+
 <main
   id="main"
   tabindex="-1"
@@ -124,7 +127,7 @@
 @if (!layout.immersive()) {
   <nav
     aria-label="Secciones"
-    class="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-white/10 bg-deep/95 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden"
+    class="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-white/10 bg-deep/95 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden"
   >
     @for (section of sections; track section.path) {
       <a

@@ -1,0 +1,98 @@
+<div class="mx-auto max-w-6xl px-4 pt-8 pb-16 sm:px-6 sm:pt-10">
+  <p class="text-[15px] font-medium tracking-wide text-gold">
+    AguiCode en YouTube
+  </p>
+  <h1
+    class="mt-2 font-display text-3xl leading-tight font-extrabold tracking-tight sm:text-[40px]"
+  >
+    Videos del canal
+  </h1>
+  <p class="mt-2 max-w-[62ch] text-[17px] text-mist">
+    Tutoriales, noticias de la semana y Shorts sobre programación,
+    automatización e inteligencia artificial.
+  </p>
+
+  <div
+    class="mt-6 flex flex-wrap gap-2"
+    role="group"
+    aria-label="Filtrar por tipo"
+  >
+    @for (filter of filters; track filter.label) {
+      <button
+        type="button"
+        class="min-h-11 rounded-full border px-4 text-sm font-medium transition-colors"
+        [class]="
+          kind() === filter.kind
+            ? 'border-gold bg-gold/12 text-gold'
+            : 'border-mist/25 text-mist hover:text-ice'
+        "
+        [attr.aria-pressed]="kind() === filter.kind"
+        (click)="kind.set(filter.kind)"
+      >
+        {{ filter.label }}
+      </button>
+    }
+  </div>
+
+  @if (isLoading() && isEmpty()) {
+    <div
+      role="status"
+      aria-busy="true"
+      class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      <span class="sr-only">Cargando los videos…</span>
+      @for (i of [1, 2, 3]; track i) {
+        <div class="aspect-video animate-pulse rounded-[20px] bg-deep"></div>
+      }
+    </div>
+  } @else if (failed()) {
+    <div
+      role="alert"
+      class="mt-7 max-w-3xl rounded-3xl border border-gold/40 bg-deep p-8"
+    >
+      <p>No se pudieron cargar los videos.</p>
+      <button
+        type="button"
+        class="mt-4 rounded-full bg-cyan px-5 py-2.5 font-display font-semibold text-night"
+        (click)="retry()"
+      >
+        Reintentar
+      </button>
+    </div>
+  } @else if (isEmpty()) {
+    <p class="mt-7 text-mist">Todavía no hay videos de este tipo.</p>
+  } @else {
+    @if (longVideos().length) {
+      <section aria-labelledby="long-videos-title" class="mt-8">
+        <h2 id="long-videos-title" class="font-display text-xl font-bold">
+          Videos
+        </h2>
+        <ul class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          @for (video of longVideos(); track video.youTubeId) {
+            <li><app-video-card [video]="video" /></li>
+          }
+        </ul>
+      </section>
+    }
+    @if (shorts().length) {
+      <section aria-labelledby="shorts-title" class="mt-10">
+        <h2 id="shorts-title" class="font-display text-xl font-bold">Shorts</h2>
+        <ul class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          @for (short of shorts(); track short.youTubeId) {
+            <li><app-video-card [video]="short" /></li>
+          }
+        </ul>
+      </section>
+    }
+  }
+
+  <a
+    [href]="channelUrl"
+    target="_blank"
+    rel="noopener"
+    class="mt-10 inline-flex h-12 items-center gap-2.5 rounded-full bg-gold px-6 font-display text-[15px] font-bold text-night"
+  >
+    <app-icon name="play" [size]="18" />Suscríbete al canal
+    <span class="sr-only">(se abre en otra pestaña)</span>
+  </a>
+</div>

@@ -22,7 +22,17 @@ describe('ReaderPage', () => {
     httpTesting = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => httpTesting.verify());
+  afterEach(() => {
+    flushVideos();
+    httpTesting.verify();
+  });
+
+  // La página también pide los videos del canal: se responden vacíos para que quede estable.
+  function flushVideos() {
+    httpTesting
+      .match((r) => r.url.startsWith(`${environment.apiUrl}/videos`))
+      .forEach((r) => r.flush([]));
+  }
 
   async function render() {
     const fixture = TestBed.createComponent(ReaderPage);
@@ -36,6 +46,7 @@ describe('ReaderPage', () => {
     httpTesting
       .expectOne(`${api}/summaries/e1`)
       .flush(edition('e1', [articleItem('a1', 1), articleItem('a2', 2)]));
+    flushVideos();
     await fixture.whenStable();
     return fixture;
   }
@@ -48,7 +59,7 @@ describe('ReaderPage', () => {
     expect(element.textContent).toContain('Segundo párrafo.');
     expect(element.textContent).toContain('Punto dos');
     const original = element.querySelector('a[target=_blank]');
-    expect(original?.getAttribute('href')).toBe('https://example.com/noticia');
+    expect(original?.getAttribute('href')).toBe('https://example.com/noticia-1');
     expect(original?.getAttribute('rel')).toBe('noopener');
   });
 

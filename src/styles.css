@@ -16,6 +16,9 @@
   --color-gold: #c6a15b;
   --color-ice: #f6fbff;
   --color-mist: #9fb3c8;
+  /* Estados de mensajes (éxito y error), legibles sobre Noche y Profundo */
+  --color-success: #5fd39a;
+  --color-danger: #ff9180;
 
   --font-display: 'Montserrat Variable', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif;
