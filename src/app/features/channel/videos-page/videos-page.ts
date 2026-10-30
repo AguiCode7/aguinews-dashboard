@@ -36,6 +36,7 @@ export class VideosPage {
   protected readonly filters = FILTERS;
   protected readonly kind = signal<VideoKind | undefined>(undefined);
   protected readonly channelUrl = environment.channelUrl;
+  protected readonly instagramUrl = environment.instagramUrl;
 
   protected readonly isLoading = computed(() => this.all.isLoading());
   protected readonly failed = computed(() => !!this.all.error());

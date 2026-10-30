@@ -77,7 +77,7 @@
   [class]="
     layout.immersive()
       ? 'focus:outline-none'
-      : 'pb-24 focus:outline-none md:pb-0'
+      : 'focus:outline-none'
   "
 >
   <router-outlet />
@@ -87,7 +87,7 @@
   [class]="
     layout.immersive()
       ? 'hidden border-t border-white/5 md:block'
-      : 'border-t border-white/5'
+      : 'border-t border-white/5 pb-24 md:pb-0'
   "
 >
   <div
@@ -105,21 +105,19 @@
       noticia enlaza a su fuente original. Hecho con Angular por AguiCode, ©
       {{ year }}.
     </p>
-    <nav aria-label="AguiCode" class="flex gap-4">
-      <a
-        [href]="channelUrl"
-        target="_blank"
-        rel="noopener"
-        class="py-2.5 font-medium text-cyan hover:underline"
-        >YouTube</a
-      >
-      <a
-        [href]="githubUrl"
-        target="_blank"
-        rel="noopener"
-        class="py-2.5 font-medium text-cyan hover:underline"
-        >GitHub</a
-      >
+    <!-- Redes del canal: en el móvil quedan sobre la barra inferior -->
+    <nav aria-label="Redes de AguiCode" class="flex flex-wrap gap-x-5 gap-y-1">
+      @for (link of socialLinks; track link.label) {
+        <a
+          [href]="link.url"
+          target="_blank"
+          rel="noopener"
+          class="inline-flex min-h-11 items-center gap-2 font-medium text-cyan hover:underline"
+        >
+          <app-icon [name]="link.icon" [size]="18" />{{ link.label }}
+          <span class="sr-only">(se abre en otra pestaña)</span>
+        </a>
+      }
     </nav>
   </div>
 </footer>
