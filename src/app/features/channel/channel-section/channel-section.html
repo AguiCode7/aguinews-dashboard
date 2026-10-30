@@ -1,0 +1,62 @@
+@if (latestVideo() || latestShorts().length) {
+  <section
+    aria-labelledby="channel-title"
+    class="rounded-[28px] border border-gold/25 bg-linear-to-br from-[#1d1a14] to-deep p-6 sm:p-8"
+  >
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="text-[15px] font-medium tracking-wide text-gold">
+          AguiCode en YouTube
+        </p>
+        <h2
+          id="channel-title"
+          class="mt-1 font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
+        >
+          Desde el canal
+        </h2>
+        <p class="mt-1.5 max-w-[60ch] text-[15px] text-mist">
+          Las noticias más importantes, explicadas en video por Agui.
+        </p>
+      </div>
+      <a
+        routerLink="/videos"
+        class="inline-flex min-h-11 items-center gap-2 font-medium text-cyan hover:underline"
+        >Ver todos los videos
+        <app-icon name="arrow-right" [size]="16" [stroke]="2.4" />
+      </a>
+    </div>
+
+    <div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,2fr)]">
+      @if (latestVideo(); as video) {
+        <app-video-card [video]="video" />
+      }
+      @if (latestShorts().length) {
+        <!-- Móvil: dos Shorts al 50 %; desde tablet, tres columnas -->
+        <ul
+          class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4"
+          aria-label="Últimos Shorts"
+        >
+          @for (
+            short of latestShorts();
+            track short.youTubeId;
+            let i = $index
+          ) {
+            <li [class]="i >= 2 ? 'hidden sm:block' : ''">
+              <app-video-card [video]="short" />
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <a
+      [href]="channelUrl"
+      target="_blank"
+      rel="noopener"
+      class="mt-6 inline-flex h-12 items-center gap-2.5 rounded-full bg-gold px-6 font-display text-[15px] font-bold text-night"
+    >
+      <app-icon name="play" [size]="18" />Ir al canal
+      <span class="sr-only">(se abre en otra pestaña)</span>
+    </a>
+  </section>
+}

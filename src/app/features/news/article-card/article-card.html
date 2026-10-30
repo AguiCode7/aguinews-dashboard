@@ -15,6 +15,12 @@
       <span class="text-mist"
         >{{ a.sourceName }} · {{ a.readingMinutes }} min</span
       >
+      @if (hasShort()) {
+        <span
+          class="inline-flex items-center gap-1 rounded-full bg-gold/15 px-3 py-1 font-medium text-gold"
+          ><app-icon name="play" [size]="14" />Con Short</span
+        >
+      }
     </div>
     <h3
       class="mt-4 font-display text-2xl leading-tight font-extrabold text-balance sm:text-3xl"
@@ -53,6 +59,11 @@
         <span class="text-mist"
           >{{ a.sourceName }} · {{ a.readingMinutes }} min</span
         >
+        @if (hasShort()) {
+          <span class="inline-flex items-center gap-1 font-medium text-gold"
+            ><app-icon name="play" [size]="13" />Con Short</span
+          >
+        }
       </span>
       <span
         class="mt-1 block font-display text-[17px] leading-snug font-bold transition-colors group-hover:text-cyan sm:text-lg"

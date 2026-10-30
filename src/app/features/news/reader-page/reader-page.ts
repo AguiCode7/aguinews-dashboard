@@ -13,6 +13,8 @@ import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { LayoutState } from '../../../core/layout/layout-state';
 import { ReadingState } from '../../../core/reading/reading-state';
+import { ChannelApi } from '../../channel/data/channel-api';
+import { normalizeUrl } from '../../channel/data/video';
 import { Icon } from '../../../shared/ui/icon';
 import { toParagraphs } from '../data/article';
 import { NewsApi } from '../data/news-api';
@@ -43,6 +45,14 @@ export class ReaderPage {
     this.article.hasValue() ? this.article.value().summaryId : undefined,
   );
   protected readonly edition = this.api.edition(this.summaryId);
+
+  // Short del canal hecho con esta noticia (si existe).
+  private readonly shorts = inject(ChannelApi).shortsByNews();
+  protected readonly short = computed(() =>
+    this.article.hasValue()
+      ? this.shorts().get(normalizeUrl(this.article.value().url))
+      : undefined,
+  );
 
   protected readonly paragraphs = computed(() =>
     this.article.hasValue() ? toParagraphs(this.article.value().reading) : [],

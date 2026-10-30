@@ -10,6 +10,9 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ReadingState } from '../../../core/reading/reading-state';
+import { ChannelSection } from '../../channel/channel-section/channel-section';
+import { ChannelApi } from '../../channel/data/channel-api';
+import { normalizeUrl } from '../../channel/data/video';
 import { Icon } from '../../../shared/ui/icon';
 import { ArticleCard } from '../article-card/article-card';
 import { NewsApi } from '../data/news-api';
@@ -25,7 +28,7 @@ const NOT_FOUND = 404;
 @Component({
   selector: 'app-edition-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, RouterLink, ArticleCard, Icon],
+  imports: [DatePipe, RouterLink, ArticleCard, ChannelSection, Icon],
   templateUrl: './edition-page.html',
 })
 export class EditionPage {
@@ -37,6 +40,8 @@ export class EditionPage {
 
   protected readonly recent = this.api.latestEditions(signal(RECENT_EDITIONS));
   protected readonly selected = this.api.edition(this.id);
+  // Shorts del canal por noticia: la tarjeta marca las que tienen video.
+  private readonly shorts = inject(ChannelApi).shortsByNews();
 
   // value() lanza un error si el recurso falló: se lee solo cuando hay valor.
   private readonly recentEditions = computed(() =>
@@ -112,6 +117,10 @@ export class EditionPage {
       this.recentEditions().flatMap((e) => e.articles.map((a) => a.topic)),
     ),
   ]);
+
+  protected hasShort(url: string): boolean {
+    return this.shorts().has(normalizeUrl(url));
+  }
 
   protected readCountOf(edition: Summary): number {
     return edition.articles.filter((a) => this.reading.isRead(a.id)).length;

@@ -186,6 +186,39 @@
           </section>
         }
 
+        @if (short(); as s) {
+          <a
+            [href]="s.url"
+            target="_blank"
+            rel="noopener"
+            class="group mt-8 flex items-center gap-4 rounded-[20px] border border-gold/35 bg-gold/8 p-4 transition hover:border-gold"
+          >
+            <img
+              [src]="s.thumbnailUrl"
+              alt=""
+              width="64"
+              height="88"
+              class="h-[88px] w-16 shrink-0 rounded-xl object-cover"
+            />
+            <span class="min-w-0">
+              <span
+                class="flex items-center gap-1.5 text-[13px] font-medium text-gold"
+                ><span aria-hidden="true">🎬</span> Mira el Short de esta
+                noticia</span
+              >
+              <span
+                class="mt-1 block font-display leading-snug font-bold transition-colors group-hover:text-cyan"
+                >{{ s.title }}</span
+              >
+              <span
+                class="mt-0.5 inline-flex items-center gap-1 text-[13px] text-mist"
+                >YouTube · AguiCode <app-icon name="external" [size]="13" />
+                <span class="sr-only">(se abre en otra pestaña)</span></span
+              >
+            </span>
+          </a>
+        }
+
         <div class="mt-8 hidden flex-wrap gap-3 md:flex">
           <a
             [href]="a.url"

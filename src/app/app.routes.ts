@@ -40,5 +40,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/news/saved-page/saved-page').then((m) => m.SavedPage),
   },
+  {
+    path: 'videos',
+    title: 'AguiNews · Videos del canal',
+    loadComponent: () =>
+      import('./features/channel/videos-page/videos-page').then(
+        (m) => m.VideosPage,
+      ),
+  },
   { path: '**', redirectTo: '' },
 ];

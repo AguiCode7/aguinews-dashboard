@@ -1,0 +1,53 @@
+@let v = video();
+<a
+  [href]="v.url"
+  target="_blank"
+  rel="noopener"
+  class="group block overflow-hidden rounded-[20px] border border-white/5 bg-deep transition hover:-translate-y-0.5 hover:border-petrol"
+>
+  <span
+    class="relative block overflow-hidden bg-night"
+    [class]="v.kind === 'Short' ? 'aspect-[9/16]' : 'aspect-video'"
+  >
+    <!-- La miniatura de YouTube es 4:3; se recorta al formato del video -->
+    <img
+      [ngSrc]="v.thumbnailUrl"
+      alt=""
+      fill
+      class="object-cover transition duration-300 group-hover:scale-105"
+    />
+    <span
+      class="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 font-display text-xs font-bold"
+      [class]="v.kind === 'Short' ? 'bg-gold text-night' : 'bg-cyan text-night'"
+      >{{ v.kind === 'Short' ? 'Short' : 'Video' }}</span
+    >
+    <span
+      class="absolute inset-0 grid place-items-center bg-night/0 transition group-hover:bg-night/30"
+    >
+      <app-icon
+        name="play"
+        [size]="40"
+        class="text-ice opacity-0 drop-shadow-lg transition group-hover:opacity-100"
+      />
+    </span>
+  </span>
+  <span class="flex flex-col gap-2 p-3.5 sm:p-4">
+    <span
+      class="line-clamp-3 font-display text-[15px] leading-snug font-bold text-pretty transition-colors group-hover:text-cyan"
+      >{{ v.title }}</span
+    >
+    <!-- Fecha y destino en una sola línea; si no cabe, baja completo (nunca palabra por palabra) -->
+    <span
+      class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[13px] text-mist"
+    >
+      <time class="whitespace-nowrap" [attr.datetime]="v.publishedAt">{{
+        v.publishedAt | date: "d 'de' MMM"
+      }}</time>
+      <span class="inline-flex items-center gap-1 whitespace-nowrap"
+        ><span aria-hidden="true">·</span> YouTube
+        <app-icon name="external" [size]="13" />
+        <span class="sr-only">(se abre en otra pestaña)</span></span
+      >
+    </span>
+  </span>
+</a>

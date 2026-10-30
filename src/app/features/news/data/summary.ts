@@ -5,6 +5,7 @@ export interface ArticleItem {
   id: string;
   position: number;
   title: string;
+  url: string; // enlace a la fuente original (enlaza la noticia con su Short)
   sourceName: string;
   topic: string;
   headline: string;

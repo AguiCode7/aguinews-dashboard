@@ -7,6 +7,7 @@ export function articleItem(id: string, position: number): ArticleItem {
     id,
     position,
     title: `Noticia ${position}`,
+    url: `https://example.com/noticia-${position}`,
     sourceName: 'example.com',
     topic: position % 2 ? 'Seguridad' : 'Desarrollo',
     headline: `Titular ${position}`,
@@ -31,7 +32,6 @@ export function article(id: string, summaryId: string, position = 1): Article {
   return {
     ...articleItem(id, position),
     summaryId,
-    url: 'https://example.com/noticia',
     lead: 'Por qué importa.',
     reading: 'Primer párrafo.\n\nSegundo párrafo.\n\nTercer párrafo.',
     keyPoints: ['Punto uno', 'Punto dos'],
